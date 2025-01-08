@@ -1,34 +1,33 @@
-import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Navigate } from 'react-router-dom'
 
-import { RootReducer } from '../../../store';
-import { close, clear } from '../../../store/reducers/cart';
-import { usePurchaseMutation } from '../../../services/api';
-import { formatPrice, getTotalPrice } from '../../../utils/index';
+import { RootReducer } from '../../../store'
+import { close, clear } from '../../../store/reducers/cart'
+import { usePurchaseMutation } from '../../../services/api'
+import { formatPrice, getTotalPrice } from '../../../utils/index'
 
-import OrderForm from './OrderForm';
-import OrderSuccess from './OrderSuccess';
-import Button from '../../../components/Button';
+import OrderForm from './OrderForm'
+import OrderSuccess from './OrderSuccess'
+import Button from '../../../components/Button'
 
-import * as S from '../styles';
+import * as S from '../styles'
 
 type DeliveryProps = {
-  handleClick: () => void;
-};
+  handleClick: () => void
+}
 
 const Delivery = ({ handleClick }: DeliveryProps) => {
-  const [nextStep, setNextStep] = useState(false);
-  const [showOrderSuccess, setShowOrderSuccess] = useState(false);
+  const [nextStep, setNextStep] = useState(false)
+  const [showOrderSuccess, setShowOrderSuccess] = useState(false)
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [purchase, { data, isSuccess }] = usePurchaseMutation()
+  const { items } = useSelector((state: RootReducer) => state.cart)
+  const dispatch = useDispatch()
 
-  const [purchase, { data, isSuccess }] = usePurchaseMutation();
-  const { items } = useSelector((state: RootReducer) => state.cart);
-  const dispatch = useDispatch();
-
-  const TotalPrice = getTotalPrice(items);
+  const TotalPrice = getTotalPrice(items)
 
   // Dados de exemplo para testes
   const someData = {
@@ -38,7 +37,7 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
       city: 'São Paulo',
       zipCode: '12345-678',
       number: 10,
-      complement: 'Apartamento 101',
+      complement: 'Apartamento 101'
     },
     payment: {
       name: 'Jane Doe',
@@ -46,33 +45,32 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
       code: '123',
       expires: {
         month: '12',
-        year: '2025',
-      },
-    },
-  };
+        year: '2025'
+      }
+    }
+  }
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(clear());
+      dispatch(clear())
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, dispatch])
 
   function closeCart() {
-    dispatch(close());
-    setShowOrderSuccess(false);
-    window.location.href = '/';
+    dispatch(close())
+    setShowOrderSuccess(false)
+    window.location.href = '/'
   }
 
-
   const handleSubmitOrder = async (item: DeliveryDataProps) => {
-    if (isSubmitting) return;
+    if (isSubmitting) return
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
 
     const mountObject: PurchasePayloadProps = {
       products: items.map((item) => ({
         id: item.id,
-        price: item.preco,
+        price: item.preco
       })),
       delivery: {
         receiver: item.receiver,
@@ -81,8 +79,8 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
           city: item.address.city,
           zipCode: item.address.zipCode,
           number: item.address.number,
-          complement: item.address.complement,
-        },
+          complement: item.address.complement
+        }
       },
       payment: {
         card: {
@@ -91,23 +89,23 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
           code: item.payment.code,
           expires: {
             month: item.payment.expires.month,
-            year: item.payment.expires.year,
-          },
-        },
-      },
-    };
+            year: item.payment.expires.year
+          }
+        }
+      }
+    }
 
-    await purchase(mountObject);
-    setShowOrderSuccess(true);
-    setIsSubmitting(false);
-  };
+    await purchase(mountObject)
+    setShowOrderSuccess(true)
+    setIsSubmitting(false)
+  }
 
   // Testando o someData manualmente
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      handleSubmitOrder(someData);
+      handleSubmitOrder(someData)
     }
-  }, []);
+  }, [])
 
   function renderFormSubTitle() {
     if (nextStep) {
@@ -115,10 +113,10 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
         <S.SubTitle>
           Pagamento - Valor a pagar ${formatPrice(TotalPrice)}
         </S.SubTitle>
-      );
+      )
     }
 
-    return <S.SubTitle>Entrega</S.SubTitle>;
+    return <S.SubTitle>Entrega</S.SubTitle>
   }
 
   function renderBackButtons() {
@@ -131,7 +129,7 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
           kind="button"
           onClick={() => setNextStep(false)}
         />
-      );
+      )
     }
 
     return (
@@ -152,11 +150,11 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
           onClick={handleClick}
         />
       </>
-    );
+    )
   }
 
   if (items.length === 0 && !isSuccess) {
-    return <Navigate to="/" />;
+    return <Navigate to="/" />
   }
 
   return (
@@ -176,8 +174,7 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
         </>
       )}
     </S.Sidebar>
-  );
-};
+  )
+}
 
-export default Delivery;
-
+export default Delivery
