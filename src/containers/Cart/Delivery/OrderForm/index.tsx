@@ -245,20 +245,44 @@ function OrderForm({ showNextForm, handleClick }: OrderFormProps) {
     )
   }
 
+  function setNextStep(arg0: boolean) {
+    throw new Error('Function not implemented.')
+  }
+
   return (
     <form onSubmit={form.handleSubmit}>
       {!showNextForm ? renderDeliveryForm() : renderPaymentForm()}
 
-      {showNextForm && (
-        <Button
-          placeholder="Finalizar pagamento"
-          displayMode="fullWidth"
-          themeMode="second"
-          kind="button"
-          type="submit"
-          onClick={() => form.handleSubmit()}
-        />
-      )}
+      {!showNextForm && (
+  <Button
+    placeholder="Continuar com o pagamento"
+    displayMode="fullWidth"
+    themeMode="second"
+    kind="button"
+    onClick={() => {
+
+      form.setTouched({
+        receiver: true,
+        description: true,
+        city: true,
+        zipCode: true,
+        number: true,
+      });
+
+
+      if (
+        !form.errors.receiver &&
+        !form.errors.description &&
+        !form.errors.city &&
+        !form.errors.zipCode &&
+        !form.errors.number
+      ) {
+
+        setNextStep(true);
+      }
+    }}
+  />
+)}
     </form>
   )
 }
