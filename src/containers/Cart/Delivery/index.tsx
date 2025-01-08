@@ -21,8 +21,8 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
   const [nextStep, setNextStep] = useState(false);
   const [showOrderSuccess, setShowOrderSuccess] = useState(false);
 
-  // Estado para controle de envio
-  const [isSubmitting, setIsSubmitting] = useState(false); // Adicionando controle de submissão
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [purchase, { data, isSuccess }] = usePurchaseMutation();
   const { items } = useSelector((state: RootReducer) => state.cart);
@@ -63,11 +63,11 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
     window.location.href = '/';
   }
 
-  // Handle para enviar o pedido
-  const handleSubmitOrder = async (item: DeliveryDataProps) => {
-    if (isSubmitting) return; // Impede múltiplas submissões
 
-    setIsSubmitting(true); // Inicia o processo de envio
+  const handleSubmitOrder = async (item: DeliveryDataProps) => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
 
     const mountObject: PurchasePayloadProps = {
       products: items.map((item) => ({
@@ -97,15 +97,15 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
       },
     };
 
-    await purchase(mountObject); // Envia a requisição
-    setShowOrderSuccess(true); // Exibe a tela de sucesso
-    setIsSubmitting(false); // Reinicia o estado após a requisição
+    await purchase(mountObject);
+    setShowOrderSuccess(true);
+    setIsSubmitting(false);
   };
 
   // Testando o someData manualmente
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      handleSubmitOrder(someData); // Envia o someData manualmente para testes
+      handleSubmitOrder(someData);
     }
   }, []);
 
