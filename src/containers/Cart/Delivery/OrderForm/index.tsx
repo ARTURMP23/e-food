@@ -245,40 +245,18 @@ function OrderForm({ showNextForm, handleClick }: OrderFormProps) {
     )
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function setNextStep(_arg0: boolean) {
-    throw new Error('Function not implemented.')
-  }
-
   return (
     <form onSubmit={form.handleSubmit}>
       {!showNextForm ? renderDeliveryForm() : renderPaymentForm()}
 
-      {!showNextForm && (
+      {showNextForm && (
         <Button
-          placeholder="Continuar com o pagamento"
+          placeholder="Finalizar pagamento"
           displayMode="fullWidth"
           themeMode="second"
           kind="button"
-          onClick={() => {
-            form.setTouched({
-              receiver: true,
-              description: true,
-              city: true,
-              zipCode: true,
-              number: true
-            })
-
-            if (
-              !form.errors.receiver &&
-              !form.errors.description &&
-              !form.errors.city &&
-              !form.errors.zipCode &&
-              !form.errors.number
-            ) {
-              setNextStep(true)
-            }
-          }}
+          type="submit"
+          onClick={() => form.handleSubmit()}
         />
       )}
     </form>

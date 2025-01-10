@@ -21,34 +21,11 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
   const [nextStep, setNextStep] = useState(false)
   const [showOrderSuccess, setShowOrderSuccess] = useState(false)
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   const [purchase, { data, isSuccess }] = usePurchaseMutation()
   const { items } = useSelector((state: RootReducer) => state.cart)
   const dispatch = useDispatch()
 
   const TotalPrice = getTotalPrice(items)
-
-  // Dados de exemplo para testes
-  const someData = {
-    receiver: 'Jane Doe',
-    address: {
-      description: 'Rua das Flores',
-      city: 'São Paulo',
-      zipCode: '12345-678',
-      number: 10,
-      complement: 'Apartamento 101'
-    },
-    payment: {
-      name: 'Jane Doe',
-      cardNumber: '4111111111111111',
-      code: '123',
-      expires: {
-        month: '12',
-        year: '2025'
-      }
-    }
-  }
 
   useEffect(() => {
     if (isSuccess) {
@@ -62,11 +39,7 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
     window.location.href = '/'
   }
 
-  const handleSubmitOrder = async (item: DeliveryDataProps) => {
-    if (isSubmitting) return
-
-    setIsSubmitting(true)
-
+  function handleSubmitOrder(item: DeliveryDataProps) {
     const mountObject: PurchasePayloadProps = {
       products: items.map((item) => ({
         id: item.id,
@@ -95,17 +68,9 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
       }
     }
 
-    await purchase(mountObject)
+    purchase(mountObject)
     setShowOrderSuccess(true)
-    setIsSubmitting(false)
   }
-
-  // Testando o someData manualmente
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      handleSubmitOrder(someData)
-    }
-  }, [])
 
   function renderFormSubTitle() {
     if (nextStep) {
@@ -134,6 +99,14 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
 
     return (
       <>
+        <Button
+          placeholder="Continuar com o pagamento"
+          displayMode="fullWidth"
+          themeMode="second"
+          kind="button"
+          onClick={() => setNextStep(true)}
+        />
+
         <Button
           placeholder="Voltar para o carrinho"
           displayMode="fullWidth"
