@@ -135,14 +135,6 @@ const Delivery = ({ handleClick }: DeliveryProps) => {
     return (
       <>
         <Button
-          placeholder="Continuar com o pagamento"
-          displayMode="fullWidth"
-          themeMode="second"
-          kind="button"
-          onClick={() => setNextStep(true)}
-        />
-
-        <Button
           placeholder="Voltar para o carrinho"
           displayMode="fullWidth"
           themeMode="second"
